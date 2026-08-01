@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import math
 import sys
+from pathlib import Path
 
 import torch
 import torch.nn as nn
@@ -2555,12 +2556,28 @@ OPTIONAL_MODULES = frozenset({"matplotlib", "pandas", "scipy", "seaborn"})
 # keeps one command -- `python3 -m tests.test_code`, what both overnight drivers
 # run as a preflight -- and keeps the scan running on every night rather than only
 # when someone remembers it. A tree without the module is the bundle, where there
-# is nothing for them to check and no import that fails to resolve.
-try:
-    from tests import test_anonymize as _anonymity
-except ModuleNotFoundError:
-    pass
-else:
+# is nothing for them to check.
+#
+# Guarded on the file, not on the exception. `from tests import test_anonymize`
+# raises `ImportError`, not `ModuleNotFoundError`, when the submodule is missing
+# but its package is not: `_handle_fromlist` swallows the inner error for
+# backwards compatibility and the `IMPORT_FROM` opcode then reports "cannot import
+# name". The `except ModuleNotFoundError` this replaces therefore caught nothing in
+# the one tree it was written for, and the bundle's only test command died on its
+# first line -- which is where a reviewer starts. Catching `ImportError` would
+# paper over that and swallow a genuine breakage inside `test_anonymize` with it;
+# asking whether the file is there keeps the two apart, so in a working tree the
+# load below stays unguarded and loud.
+#
+# `import_module` rather than an `import` statement because the dependency really
+# is conditional, and `test_anonymize` checks that every import line in the bundle
+# names something the bundle contains. A static `from tests import test_anonymize`
+# sitting under an `if` would be a standing exception to that rule; a runtime
+# lookup of a file we have just seen is not an exception to anything.
+if (Path(__file__).resolve().parent / "test_anonymize.py").exists():
+    import importlib
+
+    _anonymity = importlib.import_module(f"{__package__ or 'tests'}.test_anonymize")
     globals().update({name: value for name, value in vars(_anonymity).items()
                       if name.startswith("test_")})
 

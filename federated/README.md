@@ -36,7 +36,8 @@ and the diagnostics in one file.
 
 | File | What it does |
 | :--- | :--- |
-| [`algorithms.py`](algorithms.py) | `run_federated` plus the `MethodSpec` registry, *the* federated implementation |
+| [`algorithms.py`](algorithms.py) | `run_federated`, *the* federated implementation; re-exports everything in `methods.py` |
+| [`methods.py`](methods.py) | The `MethodSpec` registry and the bit accounting. No torch, so the export runs anywhere |
 | [`main.py`](main.py) | Entry point: one run, one config, one `metrics.json` |
 | [`data.py`](data.py) | Partitioning, the 45k/5k split, device-resident shards |
 | [`tune.py`](tune.py) | Equal-budget, validation-only learning-rate search |

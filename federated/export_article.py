@@ -35,10 +35,12 @@ That last directory is the point of the layout: the plotting scripts read
 figure code has to know that a bundle exists.
 
 This is a **pure read**: nothing is written inside a run directory. It is stdlib
-apart from one import of ``federated.algorithms.communication_bits``, which is
+apart from one import of ``federated.methods.communication_bits``, which is
 deliberate -- the bit accounting has exactly one implementation and this must not
-become a second one. That import pulls in torch, so on a machine without it the
-two communication files are skipped and everything else is still written.
+become a second one. ``federated.methods`` is the torch-free half of
+``algorithms.py`` precisely so that this holds without making the export need a
+GPU box: the accounting is arithmetic over a protocol description, and there is no
+reason a machine that cannot run a round should be unable to state its cost.
 """
 
 from __future__ import annotations
@@ -404,17 +406,13 @@ def _param_counts(config: Dict[str, Any]) -> Optional[Tuple[int, int, int]]:
 def table_rows(runs: Sequence[Run]) -> Tuple[List[Dict[str, Any]], List[str]]:
     """One row per method: accuracy, rounds-to-target, and the communication cost.
 
-    Returns the rows and any notes worth printing -- a missing torch or an unknown
-    parameter count leaves the communication columns empty rather than failing, so
-    the accuracy table still lands.
+    Returns the rows and any notes worth printing -- an unknown parameter count
+    leaves the communication columns empty rather than failing, so the accuracy
+    table still lands.
     """
-    notes: List[str] = []
-    try:
-        from federated.algorithms import communication_bits
-    except ModuleNotFoundError as exc:                       # torch not installed
-        communication_bits = None
-        notes.append(f"communication columns skipped: {exc.name} is not installed")
+    from federated.methods import communication_bits
 
+    notes: List[str] = []
     rows = []
     for variant, group in group_reported(runs).items():
         acc_mean, acc_std, n_seeds = mean_std([r.summary()["acc_tail_mean"] for r in group])
@@ -423,7 +421,7 @@ def table_rows(runs: Sequence[Run]) -> Tuple[List[Dict[str, Any]], List[str]]:
         ref = group[0]
         comm: Dict[str, Any] = {}
         counts = _param_counts(ref.config)
-        if communication_bits is not None and counts is not None:
+        if counts is not None:
             n_mat, n_aux, n_lay = counts
             comm = communication_bits(
                 ref.algorithm, n_mat, n_aux,

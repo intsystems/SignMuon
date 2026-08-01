@@ -4,7 +4,7 @@ Built by `python3 -m anonymize --build` (or `--build-dir`, which writes the
 same file set unpacked). Everything below is stated so that the omissions are
 visible rather than silent.
 
-* **107 files** included.
+* **108 files** included.
 * **Excluded**: caches (`__pycache__`, `.pytest_cache`), datasets
   (`data/`, `data_federated/`, FineWeb shards), the raw per-run trees
   (`results/federated/`, `results/synthetic/`, `results_old/`) and the
