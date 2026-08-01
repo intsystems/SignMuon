@@ -1,0 +1,22 @@
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{uplink}} & \multicolumn{2}{c}{\textbf{downlink}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Layer type} & $\alpha$ & lag & $\alpha$ & gap \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{EF21-SignMuon}} \\
+\quad $\mathtt{qkvo\_w}$ (${\times}10$)   & 0.640 & 0.66 & -- & -- \\
+\quad $\mathtt{c\_fc}$ (${\times}11$)   & 0.633 & 0.62 & -- & -- \\
+\quad $\mathtt{c\_proj}$ (${\times}11$)   & 0.634 & 0.62 & -- & -- \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{EF21-MuonUSign}} \\
+\quad $\mathtt{qkvo\_w}$   & 0.374 & 0.81 & -- & -- \\
+\quad $\mathtt{c\_fc}$   & 0.323 & 0.82 & -- & -- \\
+\quad $\mathtt{c\_proj}$   & 0.597 & 0.62 & -- & -- \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{EF21-MuonSign}} \\
+\quad $\mathtt{qkvo\_w}$   & 0.406 & 0.79 & 0.380 & 0.0011 \\
+\quad $\mathtt{c\_fc}$   & 0.355 & 0.78 & 0.253 & 0.0013 \\
+\quad $\mathtt{c\_proj}$   & 0.596 & 0.61 & $\mathbf{1.2{\times}10^{-4}}$ & $\mathbf{0.083}$ \\
+\bottomrule
+\end{tabular}

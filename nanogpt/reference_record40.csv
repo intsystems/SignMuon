@@ -1,0 +1,31 @@
+# Upstream reference curve: modded-nanogpt record 2025-10-04_Backout ('record #40'),
+# the 140.7s world record and the LAST record before NorMuon -- the exact commit this
+# port is built on.  train_gpt_rec40_reference.py in this directory is byte-identical
+# to the source embedded in these logs (verified 2026-07-26).
+#
+# Source: github.com/KellerJordan/modded-nanogpt
+#         records/track_1_short/2025-10-04_Backout/*.txt   (all 5 logs, 8xH100)
+# Log ids: 514e7581, 7fc585f8, 894043bf, b1bcfca5, d655b12a
+#
+# Columns are the mean over those 5 runs; *_sd is the population standard deviation.
+# val_loss is measured on the fixed 10,485,760-token validation split; train_time_ms
+# is the speedrun clock (validation and compilation excluded).
+#
+# This is what the `Muon` control arm must reproduce.  A Muon run that lands outside
+# ~3.278 +/- 0.003 at step 2330 means the PORT is broken, not the optimizer -- fix that
+# before reading anything into the seven other arms.  Wall-clock will be somewhat
+# higher here: this port swaps record #40's Triton kernels and its batched sharded
+# transport for a pure-torch, per-parameter equivalent (identical math, more kernel
+# launches), which every one of the eight methods pays equally.
+step,val_loss,val_loss_sd,train_time_ms,train_time_ms_sd
+0,10.8258,0.0000,0.0,0.0
+250,4.0898,0.0059,15015.8,13.2
+500,3.8203,0.0026,29932.0,19.1
+750,3.6900,0.0019,44858.0,22.4
+1000,3.5766,0.0019,59933.2,19.6
+1250,3.5183,0.0012,75022.8,19.0
+1500,3.4509,0.0011,90111.4,23.2
+1750,3.3813,0.0008,105339.8,24.3
+2000,3.3307,0.0009,120569.8,33.5
+2250,3.2911,0.0009,135814.8,46.4
+2330,3.2780,0.0009,140696.8,47.0
