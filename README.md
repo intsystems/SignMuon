@@ -1,6 +1,6 @@
 # Code
 
-Source for *SignMuon, MuonSign, and the Role of Error Feedback*.
+Source for ***SignMuon, MuonSign, and the Role of Error Feedback*.**
 
 > [!IMPORTANT]
 > Every command runs from this `code/` directory, which is the Python package
